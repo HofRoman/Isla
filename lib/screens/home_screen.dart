@@ -9,6 +9,11 @@ import 'quran_screen.dart';
 import 'prayer_screen.dart';
 import 'dhikr_screen.dart';
 import 'names_screen.dart';
+import 'qibla_screen.dart';
+import 'hadith_screen.dart';
+import 'duas_screen.dart';
+import 'prophet_stories_screen.dart';
+import 'calendar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,6 +64,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       tag: 'quran',
     ),
     _FeatureCard(
+      title: 'Qibla-Kompass',
+      subtitle: 'Richtung nach Mekka',
+      arabicLabel: 'القِبْلَة',
+      icon: '🧭',
+      tag: 'qibla',
+    ),
+    _FeatureCard(
       title: 'Gebetszeiten',
       subtitle: 'Die 5 täglichen Gebete',
       arabicLabel: 'الصلاة',
@@ -79,6 +91,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       icon: '✨',
       tag: 'names',
     ),
+    _FeatureCard(
+      title: 'Hadith',
+      subtitle: 'Hadith des Tages',
+      arabicLabel: 'الْحَدِيث',
+      icon: '📜',
+      tag: 'hadith',
+    ),
+    _FeatureCard(
+      title: 'Duas',
+      subtitle: 'Tagesgebete & Schutz',
+      arabicLabel: 'الدُّعَاء',
+      icon: '🤲',
+      tag: 'duas',
+    ),
+    _FeatureCard(
+      title: 'Prophetengeschichten',
+      subtitle: 'Qisas al-Anbiya',
+      arabicLabel: 'قِصَصُ الأَنْبِيَاء',
+      icon: '⭐',
+      tag: 'prophets',
+    ),
+    _FeatureCard(
+      title: 'Hijri-Kalender',
+      subtitle: 'Islamischer Kalender',
+      arabicLabel: 'التَّقْوِيم الهِجْرِي',
+      icon: '🌙',
+      tag: 'calendar',
+    ),
   ];
 
   void _navigate(BuildContext context, String tag) {
@@ -98,6 +138,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         break;
       case 'names':
         screen = const NamesScreen();
+        break;
+      case 'qibla':
+        screen = const QiblaScreen();
+        break;
+      case 'hadith':
+        screen = const HadithScreen();
+        break;
+      case 'duas':
+        screen = const DuasScreen();
+        break;
+      case 'prophets':
+        screen = const ProphetStoriesScreen();
+        break;
+      case 'calendar':
+        screen = const CalendarScreen();
         break;
       default:
         return;
