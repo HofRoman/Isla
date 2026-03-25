@@ -1,302 +1,202 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 import '../providers/app_provider.dart';
 import 'quiz_screen.dart';
-import 'quran_screen.dart';
-import 'prayer_screen.dart';
-import 'dhikr_screen.dart';
-import 'names_screen.dart';
 import 'qibla_screen.dart';
 import 'hadith_screen.dart';
 import 'duas_screen.dart';
 import 'prophet_stories_screen.dart';
 import 'calendar_screen.dart';
+import 'wisdom_screen.dart';
+import 'names_screen.dart';
+import 'prayer_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late AnimationController _headerController;
-  late Animation<double> _headerFade;
-  late Animation<Offset> _headerSlide;
-
-  @override
-  void initState() {
-    super.initState();
-    _headerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    _headerFade = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _headerController, curve: Curves.easeOut),
-    );
-    _headerSlide = Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _headerController, curve: Curves.easeOut));
-    _headerController.forward();
+  String _greeting() {
+    final h = DateTime.now().hour;
+    if (h < 5) return 'Gute Nacht';
+    if (h < 12) return 'Guten Morgen';
+    if (h < 17) return 'Guten Tag';
+    if (h < 20) return 'Guten Abend';
+    return 'Gute Nacht';
   }
 
-  @override
-  void dispose() {
-    _headerController.dispose();
-    super.dispose();
+  String _arabicGreeting() {
+    final h = DateTime.now().hour;
+    if (h < 12) return 'صَبَاحُ الْخَيْر';
+    return 'مَسَاءُ الْخَيْر';
   }
 
-  final List<_FeatureCard> _features = const [
-    _FeatureCard(
-      title: 'Quiz',
-      subtitle: 'Islamisches Wissen testen',
-      arabicLabel: 'اختبار',
-      icon: '🧠',
-      tag: 'quiz',
-    ),
-    _FeatureCard(
-      title: 'Koran',
-      subtitle: 'Lesen & Übersetzen',
-      arabicLabel: 'القرآن الكريم',
-      icon: '📖',
-      tag: 'quran',
-    ),
-    _FeatureCard(
-      title: 'Qibla-Kompass',
-      subtitle: 'Richtung nach Mekka',
-      arabicLabel: 'القِبْلَة',
-      icon: '🧭',
-      tag: 'qibla',
-    ),
-    _FeatureCard(
-      title: 'Gebetszeiten',
-      subtitle: 'Die 5 täglichen Gebete',
-      arabicLabel: 'الصلاة',
-      icon: '🕌',
-      tag: 'prayer',
-    ),
-    _FeatureCard(
-      title: 'Dhikr',
-      subtitle: 'Zikr & Tasbih Zähler',
-      arabicLabel: 'ذِكْر',
-      icon: '📿',
-      tag: 'dhikr',
-    ),
-    _FeatureCard(
-      title: '99 Namen',
-      subtitle: 'Asma ul-Husna',
-      arabicLabel: 'أسماء الله الحسنى',
-      icon: '✨',
-      tag: 'names',
-    ),
-    _FeatureCard(
-      title: 'Hadith',
-      subtitle: 'Hadith des Tages',
-      arabicLabel: 'الْحَدِيث',
-      icon: '📜',
-      tag: 'hadith',
-    ),
-    _FeatureCard(
-      title: 'Duas',
-      subtitle: 'Tagesgebete & Schutz',
-      arabicLabel: 'الدُّعَاء',
-      icon: '🤲',
-      tag: 'duas',
-    ),
-    _FeatureCard(
-      title: 'Prophetengeschichten',
-      subtitle: 'Qisas al-Anbiya',
-      arabicLabel: 'قِصَصُ الأَنْبِيَاء',
-      icon: '⭐',
-      tag: 'prophets',
-    ),
-    _FeatureCard(
-      title: 'Hijri-Kalender',
-      subtitle: 'Islamischer Kalender',
-      arabicLabel: 'التَّقْوِيم الهِجْرِي',
-      icon: '🌙',
-      tag: 'calendar',
-    ),
-  ];
-
-  void _navigate(BuildContext context, String tag) {
-    Widget screen;
-    switch (tag) {
-      case 'quiz':
-        screen = const QuizScreen();
-        break;
-      case 'quran':
-        screen = const QuranScreen();
-        break;
-      case 'prayer':
-        screen = const PrayerScreen();
-        break;
-      case 'dhikr':
-        screen = const DhikrScreen();
-        break;
-      case 'names':
-        screen = const NamesScreen();
-        break;
-      case 'qibla':
-        screen = const QiblaScreen();
-        break;
-      case 'hadith':
-        screen = const HadithScreen();
-        break;
-      case 'duas':
-        screen = const DuasScreen();
-        break;
-      case 'prophets':
-        screen = const ProphetStoriesScreen();
-        break;
-      case 'calendar':
-        screen = const CalendarScreen();
-        break;
-      default:
-        return;
-    }
+  void _go(BuildContext context, Widget screen) {
+    HapticFeedback.selectionClick();
     Navigator.push(
       context,
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 400),
+        transitionDuration: const Duration(milliseconds: 380),
         pageBuilder: (_, __, ___) => screen,
-        transitionsBuilder: (_, anim, __, child) {
-          return SlideTransition(
-            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-                .animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
-            child: child,
-          );
-        },
+        transitionsBuilder: (_, anim, __, child) => SlideTransition(
+          position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+              .animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+          child: child,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     return Scaffold(
-      backgroundColor: AppTheme.white,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SlideTransition(
-                position: _headerSlide,
-                child: FadeTransition(
-                  opacity: _headerFade,
-                  child: _buildHeader(provider),
+      backgroundColor: AppTheme.bg,
+      body: CustomScrollView(
+        slivers: [
+          // ── App Bar ──────────────────────────────────────
+          SliverAppBar(
+            backgroundColor: AppTheme.bg,
+            floating: true,
+            automaticallyImplyLeading: false,
+            expandedHeight: 0,
+            title: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_greeting(), style: AppTheme.body(size: 13, color: AppTheme.ink3)),
+                    Text('Isla', style: AppTheme.display(size: 26)),
+                  ],
                 ),
-              ),
+                const Spacer(),
+                Text('بِسْمِ اللَّهِ', style: AppTheme.arabic(size: 18, color: AppTheme.gold)),
+              ],
             ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (ctx, i) {
-                    final feature = _features[i];
-                    return _buildFeatureCard(ctx, feature, i);
-                  },
-                  childCount: _features.length,
-                ),
-              ),
+          ),
+
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 120),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+
+                // ── Hero Card ─────────────────────────────
+                _HeroCard(p: p).animate().fadeIn(duration: 500.ms).slideY(begin: 0.06),
+
+                const SizedBox(height: 24),
+
+                // ── Today's Salah Progress ────────────────
+                _SalahProgressCard(p: p).animate(delay: 80.ms).fadeIn().slideY(begin: 0.06),
+
+                const SizedBox(height: 24),
+
+                // ── Section: Entdecken ────────────────────
+                Text(
+                  'ENTDECKEN',
+                  style: AppTheme.label(size: 12, color: AppTheme.ink3).copyWith(letterSpacing: 1.2),
+                ).animate(delay: 160.ms).fadeIn(),
+                const SizedBox(height: 10),
+                _QuickGrid(onTap: _go).animate(delay: 200.ms).fadeIn().slideY(begin: 0.06),
+
+                const SizedBox(height: 24),
+
+                // ── Daily Verse ──────────────────────────
+                Text(
+                  'TAGESVERS',
+                  style: AppTheme.label(size: 12, color: AppTheme.ink3).copyWith(letterSpacing: 1.2),
+                ).animate(delay: 280.ms).fadeIn(),
+                const SizedBox(height: 10),
+                _DailyVerse().animate(delay: 320.ms).fadeIn().slideY(begin: 0.06),
+
+                const SizedBox(height: 24),
+
+                // ── Quick Links Row ──────────────────────
+                Text(
+                  'SCHNELLZUGRIFF',
+                  style: AppTheme.label(size: 12, color: AppTheme.ink3).copyWith(letterSpacing: 1.2),
+                ).animate(delay: 380.ms).fadeIn(),
+                const SizedBox(height: 10),
+                _QuickLinksRow(onTap: _go).animate(delay: 420.ms).fadeIn().slideY(begin: 0.06),
+
+              ]),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
-            SliverToBoxAdapter(
-              child: _buildDailyVerse(),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: 40)),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildHeader(AppProvider provider) {
+// ── Hero Banner ─────────────────────────────────────────────────────────
+class _HeroCard extends StatelessWidget {
+  final AppProvider p;
+  const _HeroCard({required this.p});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.black,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.black.withOpacity(0.25),
-            blurRadius: 30,
-            offset: const Offset(0, 12),
-          ),
-        ],
+        color: AppTheme.ink,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: AppTheme.elevatedShadow,
       ),
       child: Column(
         children: [
           Row(
             children: [
+              // Crescent icon
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.08),
+                  border: Border.all(color: AppTheme.gold.withOpacity(0.5), width: 1.5),
+                ),
+                child: const Center(
+                  child: Text('☪', style: TextStyle(fontSize: 26, color: Colors.white)),
+                ),
+              ),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'بِسْمِ اللَّهِ',
-                      style: TextStyle(
-                        fontFamily: 'Scheherazade New',
-                        fontSize: 26,
-                        color: AppTheme.accentGold,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Im Namen Allahs',
-                      style: GoogleFonts.lato(
-                        fontSize: 13,
-                        color: Colors.white70,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Isla',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1,
-                      ),
-                    ),
+                    Text('إسلا', style: AppTheme.arabic(size: 22, color: AppTheme.gold)),
                     Text(
                       'Islamische Wissens App',
-                      style: GoogleFonts.lato(
-                        fontSize: 13,
-                        color: Colors.white60,
-                        letterSpacing: 0.5,
-                      ),
+                      style: AppTheme.caption(size: 12, color: Colors.white54),
                     ),
                   ],
                 ),
               ),
               Container(
-                width: 70,
-                height: 70,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.08),
-                  border: Border.all(color: AppTheme.accentGold.withOpacity(0.4), width: 1.5),
+                  color: AppTheme.gold.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppTheme.gold.withOpacity(0.3)),
                 ),
-                child: const Center(
-                  child: Text('☪', style: TextStyle(fontSize: 34, color: Colors.white)),
+                child: Text(
+                  'بِسْمِ اللَّهِ',
+                  style: AppTheme.arabic(size: 14, color: AppTheme.gold),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
+          // Stats row
           Row(
             children: [
-              _buildStatChip('Dhikr', '${provider.totalDhikr}', '📿'),
-              const SizedBox(width: 10),
-              _buildStatChip('Bestpunktzahl', '${provider.quizHighScore}', '🏆'),
-              const SizedBox(width: 10),
-              _buildStatChip('Richtig', '${provider.totalCorrect}', '✅'),
+              _statBox('🔥', '${p.salahStreak}', 'Salah\nSerie'),
+              _divider(),
+              _statBox('📿', '${p.totalDhikr}', 'Gesamt\nDhikr'),
+              _divider(),
+              _statBox('🏆', '${p.quizHighScore}', 'Quiz\nBestScore'),
+              _divider(),
+              _statBox('📖', '${p.completedSurahCount}', 'Suren\ngelesen'),
             ],
           ),
         ],
@@ -304,30 +204,147 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildStatChip(String label, String value, String icon) {
-    return Expanded(
+  Widget _statBox(String icon, String value, String label) => Expanded(
+    child: Column(
+      children: [
+        Text(icon, style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 4),
+        Text(value, style: AppTheme.title(size: 18, color: Colors.white)),
+        const SizedBox(height: 2),
+        Text(label, style: AppTheme.caption(size: 9, color: Colors.white38), textAlign: TextAlign.center),
+      ],
+    ),
+  );
+
+  Widget _divider() => Container(width: 1, height: 40, color: Colors.white12);
+}
+
+// ── Salah Progress Card ──────────────────────────────────────────────────
+class _SalahProgressCard extends StatelessWidget {
+  final AppProvider p;
+  const _SalahProgressCard({required this.p});
+
+  static const _prayers = [
+    ('fajr', 'Fajr', 'الفجر'),
+    ('dhuhr', 'Dhuhr', 'الظهر'),
+    ('asr', 'Asr', 'العصر'),
+    ('maghrib', 'Maghrib', 'المغرب'),
+    ('isha', 'Isha', 'العشاء'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final count = p.todayPrayerCount();
+    final progress = count / 5.0;
+
+    return AppCard(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('Heutiges Gebet', style: AppTheme.title(size: 15)),
+              const Spacer(),
+              Text(
+                '$count / 5',
+                style: AppTheme.title(size: 15, color: count == 5 ? AppTheme.green : AppTheme.ink3),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppTheme.separator,
+              valueColor: AlwaysStoppedAnimation(count == 5 ? AppTheme.green : AppTheme.gold),
+              minHeight: 6,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _prayers.map((prayer) {
+              final done = p.isPrayerDone(prayer.$1);
+              return Column(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: done ? AppTheme.ink : AppTheme.bg,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: done ? AppTheme.ink : AppTheme.separator,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Center(
+                      child: done
+                          ? const Icon(Icons.check_rounded, color: Colors.white, size: 16)
+                          : Text(prayer.$3, style: AppTheme.arabic(size: 10, color: AppTheme.ink3)),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(prayer.$2, style: AppTheme.caption(size: 9)),
+                ],
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Quick Grid ──────────────────────────────────────────────────────────
+class _QuickGrid extends StatelessWidget {
+  final void Function(BuildContext, Widget) onTap;
+  const _QuickGrid({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      _GridItem('Quiz', '🧠', 'Wissen testen', const QuizScreen()),
+      _GridItem('Qibla', '🧭', 'Richtung Mekka', const QiblaScreen()),
+      _GridItem('Hadithe', '📜', 'Hadith des Tages', const HadithScreen()),
+      _GridItem('Duas', '🤲', 'Tagesgebete', const DuasScreen()),
+      _GridItem('Propheten', '⭐', 'Qisas al-Anbiya', const ProphetStoriesScreen()),
+      _GridItem('Kalender', '🌙', 'Hijri Kalender', const CalendarScreen()),
+      _GridItem('99 Namen', '✨', 'Asma ul-Husna', const NamesScreen()),
+      _GridItem('Weisheiten', '💫', 'Verse & Hadithe', const WisdomScreen()),
+    ];
+
+    return GridView.count(
+      crossAxisCount: 4,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: items.map((item) => _gridCell(context, item)).toList(),
+    );
+  }
+
+  Widget _gridCell(BuildContext context, _GridItem item) {
+    return GestureDetector(
+      onTap: () => onTap(context, item.screen),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.07),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+          color: AppTheme.cardBg,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: AppTheme.subtleShadow,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(icon, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 4),
+            Text(item.icon, style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 5),
             Text(
-              value,
-              style: GoogleFonts.lato(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              label,
-              style: GoogleFonts.lato(fontSize: 10, color: Colors.white54),
+              item.title,
+              style: AppTheme.caption(size: 10, color: AppTheme.ink),
               textAlign: TextAlign.center,
             ),
           ],
@@ -335,163 +352,113 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
+}
 
-  Widget _buildFeatureCard(BuildContext context, _FeatureCard feature, int index) {
-    return GestureDetector(
-      onTap: () => _navigate(context, feature.tag),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: AppTheme.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFE8E8E8), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => _navigate(context, feature.tag),
-            borderRadius: BorderRadius.circular(22),
-            splashColor: AppTheme.black.withOpacity(0.05),
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: Row(
-                children: [
-                  Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      color: AppTheme.lightGrey,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Center(
-                      child: Text(feature.icon, style: const TextStyle(fontSize: 28)),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          feature.title,
-                          style: AppTheme.titleStyle(fontSize: 20),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          feature.subtitle,
-                          style: AppTheme.bodyStyle(fontSize: 13, color: AppTheme.mediumGrey),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        feature.arabicLabel,
-                        style: TextStyle(
-                          fontFamily: 'Scheherazade New',
-                          fontSize: 18,
-                          color: AppTheme.mediumGrey,
-                          height: 1.8,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: AppTheme.black,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 12),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    )
-        .animate(delay: Duration(milliseconds: 100 + index * 80))
-        .fadeIn(duration: 400.ms)
-        .slideX(begin: 0.15, curve: Curves.easeOut);
-  }
+class _GridItem {
+  final String title, icon, subtitle;
+  final Widget screen;
+  const _GridItem(this.title, this.icon, this.subtitle, this.screen);
+}
 
-  Widget _buildDailyVerse() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppTheme.lightGrey,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppTheme.accentGold.withOpacity(0.3), width: 1.5),
-      ),
+// ── Daily Verse ─────────────────────────────────────────────────────────
+class _DailyVerse extends StatelessWidget {
+  const _DailyVerse();
+
+  @override
+  Widget build(BuildContext context) {
+    // Rotate verse by day of year
+    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+    final verses = _verses;
+    final v = verses[dayOfYear % verses.length];
+
+    return AppCard(
+      padding: const EdgeInsets.all(22),
       child: Column(
         children: [
           Row(
             children: [
-              Text(
-                '✨',
-                style: const TextStyle(fontSize: 18),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.gold.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(v[2], style: AppTheme.label(size: 10, color: AppTheme.gold)),
               ),
-              const SizedBox(width: 8),
-              Text(
-                'Tagesvers',
-                style: AppTheme.bodyStyle(fontSize: 13, color: AppTheme.mediumGrey),
-              ),
+              const Spacer(),
+              Text('✨', style: const TextStyle(fontSize: 14)),
             ],
           ),
           const SizedBox(height: 16),
           Text(
-            'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا',
-            style: TextStyle(
-              fontFamily: 'Scheherazade New',
-              fontSize: 26,
-              color: AppTheme.black,
-              height: 2.0,
-            ),
+            v[0],
+            style: AppTheme.arabic(size: 22, color: AppTheme.ink),
             textAlign: TextAlign.center,
             textDirection: TextDirection.rtl,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
+          Container(width: 40, height: 1, color: AppTheme.separator),
+          const SizedBox(height: 14),
           Text(
-            '„Und wer Allah fürchtet, dem schafft Er einen Ausweg."',
-            style: AppTheme.bodyStyle(fontSize: 15, color: AppTheme.softBlack),
+            '„${v[1]}"',
+            style: AppTheme.body(size: 14, color: AppTheme.ink2),
             textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Sure At-Talaq 65:2',
-            style: AppTheme.bodyStyle(fontSize: 12, color: AppTheme.mediumGrey),
           ),
         ],
       ),
-    ).animate(delay: 500.ms).fadeIn(duration: 600.ms).slideY(begin: 0.1);
+    );
   }
+
+  static const _verses = [
+    ['وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا', 'Und wer Allah fürchtet, dem schafft Er einen Ausweg.', 'At-Talaq 65:2'],
+    ['إِنَّ مَعَ الْعُسْرِ يُسْرًا', 'Wahrlich, mit der Schwierigkeit kommt Erleichterung.', 'Al-Inshirah 94:6'],
+    ['وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ', 'Und verzweifelt nicht an der Barmherzigkeit Allahs.', 'Yusuf 12:87'],
+    ['حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ', 'Allah genügt uns, und Er ist der beste Sachwalter.', 'Al-Imran 3:173'],
+    ['وَاللَّهُ يُحِبُّ الصَّابِرِينَ', 'Und Allah liebt die Geduldigen.', 'Al-Imran 3:146'],
+    ['لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا', 'Allah belastet keine Seele über ihr Vermögen.', 'Al-Baqara 2:286'],
+    ['وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ', 'Und Er ist mit euch, wo auch immer ihr seid.', 'Al-Hadid 57:4'],
+  ];
 }
 
-class _FeatureCard {
-  final String title;
-  final String subtitle;
-  final String arabicLabel;
-  final String icon;
-  final String tag;
+// ── Quick Links Row ─────────────────────────────────────────────────────
+class _QuickLinksRow extends StatelessWidget {
+  final void Function(BuildContext, Widget) onTap;
+  const _QuickLinksRow({required this.onTap});
 
-  const _FeatureCard({
-    required this.title,
-    required this.subtitle,
-    required this.arabicLabel,
-    required this.icon,
-    required this.tag,
-  });
+  @override
+  Widget build(BuildContext context) {
+    final links = [
+      ('Gebet', '🫧', const PrayerScreen()),
+      ('Qibla', '🧭', const QiblaScreen()),
+      ('Kalender', '🌙', const CalendarScreen()),
+      ('Weisheiten', '💫', const WisdomScreen()),
+    ];
+
+    return Row(
+      children: List.generate(links.length, (idx) {
+        final link = links[idx];
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => onTap(context, link.$3),
+            child: Container(
+              margin: EdgeInsets.only(right: idx < links.length - 1 ? 10 : 0),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                color: AppTheme.cardBg,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppTheme.subtleShadow,
+              ),
+              child: Column(
+                children: [
+                  Text(link.$2, style: const TextStyle(fontSize: 22)),
+                  const SizedBox(height: 4),
+                  Text(link.$1, style: AppTheme.caption(size: 10, color: AppTheme.ink)),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
 }
