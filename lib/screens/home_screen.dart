@@ -17,6 +17,8 @@ import 'calendar_screen.dart';
 import 'wisdom_screen.dart';
 import 'names_screen.dart';
 import 'prayer_screen.dart';
+import 'azkar_screen.dart';
+import 'zakat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -569,14 +571,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ── Quick Grid ────────────────────────────────────────────────────────────
   Widget _buildQuickGrid() {
     final items = [
-      ('Quiz',      '🧠', const QuizScreen()),
-      ('Hadithe',   '📜', const HadithScreen()),
-      ('Duas',      '🤲', const DuasScreen()),
-      ('Propheten', '⭐', const ProphetStoriesScreen()),
-      ('Kalender',  '🌙', const CalendarScreen()),
-      ('99 Namen',  '✨', const NamesScreen()),
-      ('Weisheiten','💫', const WisdomScreen()),
-      ('Gebet',     '🕌', const PrayerScreen()),
+      ('Quiz',     '🧠', const QuizScreen()),
+      ('Azkar',    '🌿', const AzkarScreen()),
+      ('Duas',     '🤲', const DuasScreen()),
+      ('Hadithe',  '📜', const HadithScreen()),
+      ('Zakat',    '⚖️', const ZakatScreen()),
+      ('Kalender', '🌙', const CalendarScreen()),
+      ('99 Namen', '✨', const NamesScreen()),
+      ('Propheten','⭐', const ProphetStoriesScreen()),
     ];
 
     return GridView.count(
