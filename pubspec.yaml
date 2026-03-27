@@ -25,11 +25,10 @@ dependencies:
   flutter_svg: ^2.0.10+1
   shimmer: ^3.0.0
   confetti: ^0.7.0
-  flutter_compass: ^0.8.0
   geolocator: ^12.0.0
-  permission_handler: ^11.3.1
   hijri: ^2.0.2
-  flutter_qiblah: ^2.1.0
+  # flutter_compass and flutter_qiblah removed — no web support needed
+  # (compass uses manual bearing calculation)
 
 dev_dependencies:
   flutter_test:
@@ -41,3 +40,4 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/fonts/
