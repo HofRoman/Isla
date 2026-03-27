@@ -15,6 +15,8 @@ import 'sunnah_screen.dart';
 import 'khatma_screen.dart';
 import 'wisdom_screen.dart';
 import 'salah_tracker_screen.dart';
+import 'azkar_screen.dart';
+import 'zakat_screen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -58,6 +60,8 @@ class MoreScreen extends StatelessWidget {
                   [
                     _MoreItem('Salah Tracker', 'Tägliche Gebete verfolgen', '🕌',
                         () => _go(context, const SalahTrackerScreen())),
+                    _MoreItem('Azkar', 'Morgen- & Abend-Gebetsformeln', '🌿',
+                        () => _go(context, const AzkarScreen())),
                     _MoreItem('Sunnah Checkliste', 'Prophetische Handlungen täglich', '📿',
                         () => _go(context, const SunnahScreen())),
                     _MoreItem('Khatma Tracker', 'Koran-Lektüre verfolgen', '📖',
@@ -101,6 +105,8 @@ class MoreScreen extends StatelessWidget {
                   [
                     _MoreItem('Islamische Weisheiten', 'Verse & Hadithe als Kunstwerke', '💫',
                         () => _go(context, const WisdomScreen())),
+                    _MoreItem('Zakat Rechner', 'Zakat berechnen & erklären', '⚖️',
+                        () => _go(context, const ZakatScreen())),
                   ],
                 ),
                 const SizedBox(height: 28),
