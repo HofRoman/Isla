@@ -51,6 +51,19 @@ class AppTheme {
   static TextStyle label({double size = 11, Color color = ink3}) =>
       GoogleFonts.plusJakartaSans(fontSize: size, fontWeight: FontWeight.w600, color: color, letterSpacing: 0.5);
 
+  // ── Backward-compat aliases (old screens) ─────────────────
+  static const Color accentGold  = gold;
+  static const Color lightGrey   = bg;
+  static const Color mediumGrey  = ink3;
+  static const Color softBlack   = ink2;
+  static const Color darkGrey    = ink2;
+
+  static TextStyle titleStyle({double fontSize = 20, Color? color, FontWeight? weight}) =>
+      title(size: fontSize, color: color ?? ink, weight: weight ?? FontWeight.w700);
+
+  static TextStyle bodyStyle({double fontSize = 15, Color? color, FontWeight? weight}) =>
+      body(size: fontSize, color: color ?? ink, weight: weight ?? FontWeight.w400);
+
   // ── Theme ─────────────────────────────────────────────────
   static ThemeData get theme => ThemeData(
     useMaterial3: true,

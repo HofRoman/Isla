@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 import '../providers/app_provider.dart';
 import '../utils/prayer_times.dart';
+import '../utils/prayer_api_service.dart';
 import 'quiz_screen.dart';
 import 'qibla_screen.dart';
 import 'hadith_screen.dart';
@@ -115,7 +116,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _applyLocation(double lat, double lon, String name) {
     if (!mounted) return;
+    // Show local calc immediately, then replace with API result
     final times = PrayerTimes.calculate(lat: lat, lon: lon, date: DateTime.now());
+    PrayerApiService.fetch(lat: lat, lon: lon).then((apiTimes) {
+      if (mounted) setState(() => _prayerTimes = apiTimes);
+      _updateCountdown();
+    });
     setState(() {
       _lat = lat; _lon = lon;
       _cityName = name;
